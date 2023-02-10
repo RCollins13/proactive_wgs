@@ -45,6 +45,11 @@ task Subset {
     String gatksv_samtools_cloud_docker
     Int disk_gb = 100
   }
+  parameter_meta {
+    vcf: {
+      localization_optional: true
+    }
+  }
   
   command <<<
 
