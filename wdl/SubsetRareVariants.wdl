@@ -50,6 +50,8 @@ task Subset {
       localization_optional: true
     }
   }
+
+  String outfile = "${prefix}.vcf.gz"
   
   command <<<
 
@@ -64,18 +66,18 @@ task Subset {
       ~{vcf} \
     | bcftools view \
       -O z \
-      -o "${prefix}.vcf.gz" \
+      -o ~{outfile} \
       --min-ac 1 \
       --max-ac 2 \
       --drop-genotypes
 
-    tabix -p vcf -f "${prefix}.vcf.gz"
+    tabix -p vcf -f ~{outfile}
   
   >>>
 
   output {
-    File vcf_subset = "${prefix}.vcf.gz"
-    File vcf_subset_idx = "${prefix}.vcf.gz.tbi"
+    File vcf_subset = "${outfile}"
+    File vcf_subset_idx = "${outfile}.tbi"
   }
 
   runtime {
