@@ -44,6 +44,7 @@ task Subset {
     String prefix
     String gatksv_samtools_cloud_docker
     Int disk_gb = 100
+    Float mem_gb = 7.75
   }
   parameter_meta {
     vcf: {
@@ -82,7 +83,7 @@ task Subset {
 
   runtime {
     cpu: 1
-    memory: "3.75 GiB"
+    memory: mem_gb + " GiB"
     disks: "local-disk " + disk_gb + " HDD"
     bootDiskSizeGb: 10
     docker: gatksv_samtools_cloud_docker
