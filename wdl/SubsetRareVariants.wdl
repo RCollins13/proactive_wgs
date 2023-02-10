@@ -47,12 +47,6 @@ task Subset {
     Float mem_gb = 3.75
   }
 
-  parameter_meta {
-    vcf: {
-      localization_optional: true
-    }
-  }
-
   String outfile = "${prefix}.vcf.gz"
   
   command <<<
