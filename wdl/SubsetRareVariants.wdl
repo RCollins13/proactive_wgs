@@ -13,7 +13,7 @@ workflow SubsetRareVariants {
     File sample_subset
     File? regions_bed
     String prefix
-    String gatksv_samtools_cloud_docker
+    String bcftools_docker
   }
 
   scatter ( vcf_info in zip(vcfs, vcf_idxs) ) {
@@ -24,7 +24,7 @@ workflow SubsetRareVariants {
         sample_list = sample_subset,
         regions_bed = regions_bed,
         prefix = basename(vcf_info.left, "vcf.gz") + prefix,
-        gatksv_samtools_cloud_docker = gatksv_samtools_cloud_docker
+        bcftools_docker = bcftools_docker
     }
   }
 
@@ -37,15 +37,16 @@ workflow SubsetRareVariants {
 
 task Subset {
   input {
-    String vcf # Intentionally declared as string to use remote htslib streaming
+    File vcf
     File vcf_idx
     File sample_list
     File? regions_bed
     String prefix
-    String gatksv_samtools_cloud_docker
-    Int disk_gb = 100
-    Float mem_gb = 7.75
+    String bcftools_docker
+    Int? disk_gb
+    Float mem_gb = 3.75
   }
+
   parameter_meta {
     vcf: {
       localization_optional: true
@@ -57,8 +58,6 @@ task Subset {
   command <<<
 
     set -eu -o pipefail
-
-    export GCS_OAUTH_TOKEN=`gcloud auth application-default print-access-token`
 
     bcftools view \
       --samples-file ~{sample_list} \
@@ -81,12 +80,14 @@ task Subset {
     File vcf_subset_idx = "${outfile}.tbi"
   }
 
+  Int dynamic_disk = ceil(3 * size(vcf, "GB"))
+
   runtime {
     cpu: 1
     memory: mem_gb + " GiB"
-    disks: "local-disk " + disk_gb + " HDD"
+    disks: "local-disk " + select_first([disk_gb, dynamic_disk]) + " HDD"
     bootDiskSizeGb: 10
-    docker: gatksv_samtools_cloud_docker
+    docker: bcftools_docker
     preemptible: 1
     maxRetries: 1
   }
