@@ -23,7 +23,7 @@ workflow SubsetRareVariants {
         vcf_idx = vcf_info.right,
         sample_list = sample_subset,
         regions_bed = regions_bed,
-        prefix = basename(vcf_info.left, "vcf.gz") + prefix,
+        prefix = basename(vcf_info.left, "vcf.bgz") + prefix,
         bcftools_docker = bcftools_docker
     }
   }
