@@ -8,7 +8,7 @@ version 1.0
 
 workflow SubsetRareVariants {
 	input {
-    Array[String] vcfs # Intentionally declared as string to use remote htslib streaming
+    Array[File] vcfs
     Array[File] vcf_idxs
     File sample_subset
     File? regions_bed
