@@ -62,8 +62,7 @@ task Subset {
       -O z \
       -o ~{outfile} \
       --min-ac 1 \
-      --max-ac 2 \
-      --drop-genotypes
+      --max-ac 2
 
     tabix -p vcf -f ~{outfile}
   
